@@ -76,6 +76,8 @@ func infoItems(data: PeerInfoScreenData?, context: AccountContext, presentationD
         let ItemAbout = 3003
         let ItemNote = 3004
         let ItemAppFooter = 3005
+        let ItemTelegentId = 3010
+        let ItemTelegentDC = 3011
         let ItemAffiliate = 4000
         let ItemAffiliateInfo = 4001
         let ItemBusinessHours = 5000
@@ -172,6 +174,19 @@ func infoItems(data: PeerInfoScreenData?, context: AccountContext, presentationD
             )
         }
         
+        // Telegent: show user ID and DC
+        do {
+            let rawUserId = user.id.id._internalGetInt64Value()
+            items[currentPeerInfoSection]!.append(PeerInfoScreenLabeledValueItem(id: ItemTelegentId, label: "ID", text: "\(rawUserId)", textColor: .primary, action: nil, requestLayout: { animated in
+                interaction.requestLayout(animated)
+            }))
+
+            let dcId = context.account.network.datacenterId
+            items[currentPeerInfoSection]!.append(PeerInfoScreenLabeledValueItem(id: ItemTelegentDC, label: "DC", text: "DC\(dcId)", textColor: .primary, action: nil, requestLayout: { animated in
+                interaction.requestLayout(animated)
+            }))
+        }
+
         if let cachedData = data.cachedData as? CachedUserData {
             if let birthday = cachedData.birthday {
                 var hasBirthdayToday = false
