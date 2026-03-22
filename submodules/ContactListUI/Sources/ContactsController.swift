@@ -335,9 +335,8 @@ public class ContactsController: ViewController {
         
         self.contactsNode.contactListNode.suppressPermissionWarning = { [weak self] in
             if let strongSelf = self {
-                strongSelf.context.sharedContext.presentContactsWarningSuppression(context: strongSelf.context, present: { c, a in
-                    strongSelf.present(c, in: .window(.root), with: a)
-                })
+                // Telegent: auto-suppress without showing dialog
+                ApplicationSpecificNotice.setPermissionWarning(accountManager: strongSelf.context.sharedContext.accountManager, permission: .contacts, value: Int32(Date().timeIntervalSince1970))
             }
         }
         
