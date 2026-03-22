@@ -1468,23 +1468,17 @@ func peerInfoScreenData(
             |> map { peerView, availablePanes, globalNotificationSettings, encryptionKeyFingerprint, status, hasStories, hasStoryArchive, recommendedBots, accountIsPremium, savedMessagesPeer, hasSavedMessagesChats, hasSavedMessages, hasSavedMessageTags, hasBotPreviewItems, personalChannel, privacySettings, starsRevenueContextAndState, revenueContextAndState, premiumGiftOptions, webAppPermissions, savedMusicState -> PeerInfoScreenData in
                 var availablePanes = availablePanes
                 if isMyProfile {
-                    availablePanes?.insert(.stories, at: 0)
+                    // Telegent: Stories panes removed
                     if availablePanes != nil, profileGiftsContext != nil, let cachedData = peerView.cachedData as? CachedUserData {
                         if let starGiftsCount = cachedData.starGiftsCount, starGiftsCount > 0 {
-                            availablePanes?.insert(.gifts, at: 1)
+                            availablePanes?.insert(.gifts, at: 0)
                         }
                     }
-                    if let hasStoryArchive, hasStoryArchive {
-                        availablePanes?.append(.storyArchive)
-                    }
                 } else if let hasStories {
-                    if hasStories, peerView.peers[peerView.peerId] is TelegramUser, peerView.peerId != context.account.peerId {
-                        availablePanes?.insert(.stories, at: 0)
-                    }
-                    
+                    let _ = hasStories
                     if availablePanes != nil, profileGiftsContext != nil, let cachedData = peerView.cachedData as? CachedUserData, peerView.peerId != context.account.peerId {
                         if let starGiftsCount = cachedData.starGiftsCount, starGiftsCount > 0 {
-                            availablePanes?.insert(.gifts, at: hasStories ? 1 : 0)
+                            availablePanes?.insert(.gifts, at: 0)
                         }
                     }
                     
@@ -1738,18 +1732,15 @@ func peerInfoScreenData(
             |> map { peerView, availablePanes, globalNotificationSettings, status, currentInvitationsContext, invitations, currentRequestsContext, requests, hasStories, accountIsPremium, recommendedChannels, hasSavedMessages, hasSavedMessagesChats, hasSavedMessageTags, isPremiumRequiredForStoryPosting, starsRevenueContextAndState, revenueContextAndState, profileGiftsState, personalChannel -> PeerInfoScreenData in
                 var availablePanes = availablePanes
                 if let hasStories {
-                    if hasStories {
-                        availablePanes?.insert(.stories, at: 0)
-                    }
+                    let _ = hasStories
+                    // Telegent: Stories pane removed
                     if let recommendedChannels, !recommendedChannels.channels.isEmpty {
                         availablePanes?.append(.similarChannels)
                     }
-                    
+
                     if case .peer = chatLocation {
                         if hasSavedMessages, hasSavedMessagesChats, var availablePanesValue = availablePanes {
                             if let index = availablePanesValue.firstIndex(of: .media) {
-                                availablePanesValue.insert(.savedMessages, at: index + 1)
-                            } else if let index = availablePanesValue.firstIndex(of: .stories) {
                                 availablePanesValue.insert(.savedMessages, at: index + 1)
                             } else {
                                 availablePanesValue.insert(.savedMessages, at: 0)
@@ -1757,10 +1748,10 @@ func peerInfoScreenData(
                             availablePanes = availablePanesValue
                         }
                     }
-                    
+
                     if availablePanes != nil, let cachedData = peerView.cachedData as? CachedChannelData {
                         if (cachedData.starGiftsCount ?? 0) > 0 || (profileGiftsState.count ?? 0) > 0 || forceHasGifts {
-                            availablePanes?.insert(.gifts, at: hasStories ? 1 : 0)
+                            availablePanes?.insert(.gifts, at: 0)
                         }
                     }
                 } else {
@@ -2089,14 +2080,11 @@ func peerInfoScreenData(
                 }
                 
                 if let hasStories {
-                    if hasStories {
-                        availablePanes?.insert(.stories, at: 0)
-                    }
+                    // Telegent: Stories pane removed
+                    let _ = hasStories
                     if case .peer = chatLocation {
                         if hasSavedMessages, hasSavedMessagesChats, var availablePanesValue = availablePanes {
                             if let index = availablePanesValue.firstIndex(of: .media) {
-                                availablePanesValue.insert(.savedMessages, at: index + 1)
-                            } else if let index = availablePanesValue.firstIndex(of: .stories) {
                                 availablePanesValue.insert(.savedMessages, at: index + 1)
                             } else {
                                 availablePanesValue.insert(.savedMessages, at: 0)
@@ -2105,7 +2093,7 @@ func peerInfoScreenData(
                         }
                     }
                 }
-                                
+
                 var canManageInvitations = false
                 if let group = peerViewMainPeer(peerView) as? TelegramGroup {
                     let previousValue = wasUpgradedGroup.swap(group.migrationReference != nil)

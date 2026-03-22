@@ -5482,19 +5482,7 @@ public class ChatListItemNode: ItemListRevealOptionsItemNode {
     }
     
     @objc private func avatarStoryTapGesture(_ recognizer: UITapGestureRecognizer) {
-        if case .ended = recognizer.state {
-            guard let item = self.item else {
-                return
-            }
-            switch item.content {
-            case .loading:
-                break
-            case let .peer(peerData):
-                item.interaction.openStories(.peer(peerData.peer.peerId), self)
-            case .groupReference:
-                item.interaction.openStories(.archive, self)
-            }
-        }
+        // Telegent: Stories disabled, ignore avatar story taps
     }
 }
 

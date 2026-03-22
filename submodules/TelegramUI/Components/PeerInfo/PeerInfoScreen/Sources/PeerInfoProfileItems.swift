@@ -853,9 +853,7 @@ func infoItems(data: PeerInfoScreenData?, context: AccountContext, presentationD
                 }
             }, contextAction: { node, gesture in
                 interaction.openMemberContextMenu(member, node, gesture)
-            }, openStories: { sourceView in
-                interaction.performMemberAction(member, .openStories(sourceView: sourceView))
-            }))
+            }, openStories: nil))
         }
     }
     
