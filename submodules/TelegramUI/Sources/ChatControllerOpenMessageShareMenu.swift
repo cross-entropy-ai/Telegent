@@ -100,11 +100,7 @@ extension ChatControllerImpl {
 
         let chatPresentationInterfaceState = self.presentationInterfaceState
         var warnAboutPrivate = false
-        var canShareToStory = false
         if case .peer = chatPresentationInterfaceState.chatLocation, let channel = message.peers[message.id.peerId] as? TelegramChannel {
-            if case .broadcast = channel.info {
-                canShareToStory = true
-            }
             if channel.addressName == nil {
                 warnAboutPrivate = true
             }
@@ -112,32 +108,8 @@ extension ChatControllerImpl {
         let shareController = ShareController(context: self.context, subject: .messages(messages), updatedPresentationData: self.updatedPresentationData, shareAsLink: true)
         shareController.parentNavigationController = self.navigationController as? NavigationController
         
-        if let message = messages.first, message.media.contains(where: { media in
-            if media is TelegramMediaContact || media is TelegramMediaPoll || media is TelegramMediaTodo {
-                return true
-            } else if let file = media as? TelegramMediaFile, file.isSticker || file.isAnimatedSticker || file.isVideoSticker {
-                return true
-            } else {
-                return false
-            }
-        }) {
-            canShareToStory = false
-        }
-        if message.text.containsOnlyEmoji {
-            canShareToStory = false
-        }
+        // Telegent: canShareToStory is always false
         
-        if canShareToStory {
-            shareController.shareStory = { [weak self] in
-                guard let self else {
-                    return
-                }
-                Queue.mainQueue().after(0.15) {
-                    let controller = self.context.sharedContext.makeStorySharingScreen(context: self.context, subject: .messages(messages), parentController: self)
-                    self.push(controller)
-                }
-            }
-        }
         shareController.dismissed = { [weak self] shared in
             if shared {
                 self?.commitPurposefulAction()
