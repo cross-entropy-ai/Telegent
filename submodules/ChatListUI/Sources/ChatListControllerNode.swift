@@ -2361,13 +2361,6 @@ final class ChatListControllerNode: ASDisplayNode, ASGestureRecognizerDelegate {
 }
 
 func shouldDisplayStoriesInChatListHeader(storySubscriptions: EngineStorySubscriptions, isHidden: Bool) -> Bool {
-    if !storySubscriptions.items.isEmpty {
-        return true
-    }
-    if !isHidden, let accountItem = storySubscriptions.accountItem {
-        if accountItem.hasPending || accountItem.storyCount != 0 {
-            return true
-        }
-    }
+    // Telegent: Stories disabled
     return false
 }

@@ -1790,14 +1790,8 @@ public class ChatListItemNode: ItemListRevealOptionsItemNode {
             enablePreview = false
         }
         
-        self.avatarNode.setStoryStats(storyStats: storyState.flatMap { storyState in
-            return AvatarNode.StoryStats(
-                totalCount: storyState.stats.totalCount,
-                unseenCount: storyState.stats.unseenCount,
-                hasUnseenCloseFriendsItems: storyState.hasUnseenCloseFriends,
-                hasLiveItems: storyState.stats.hasLiveItems
-            )
-        }, presentationParams: AvatarNode.StoryPresentationParams(
+        // Telegent: disable story rings on avatars
+        self.avatarNode.setStoryStats(storyStats: nil, presentationParams: AvatarNode.StoryPresentationParams(
             colors: AvatarNode.Colors(theme: item.presentationData.theme),
             lineWidth: 2.33,
             inactiveLineWidth: 1.33
