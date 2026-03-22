@@ -347,35 +347,9 @@ private func notificationsPeerCategoryEntries(category: NotificationsPeerCategor
     }
 
     if case .stories = category {
-        entries.append(.enableHeader(presentationData.strings.Notifications_Stories_SettingsHeader))
-        
-        var allEnabled = false
-        var importantEnabled = false
-        
-        switch notificationSettings.storySettings.mute {
-        case .muted:
-            allEnabled = false
-            importantEnabled = false
-        case .unmuted:
-            allEnabled = true
-            importantEnabled = true
-        case .default:
-            allEnabled = false
-            importantEnabled = true
-        }
-        
-        entries.append(.enable(presentationData.theme, presentationData.strings.Notifications_Stories_GlobalSetting, allEnabled))
-        if !allEnabled {
-            entries.append(.enableImportant(presentationData.theme, presentationData.strings.Notifications_Stories_Important, importantEnabled))
-            entries.append(.importantInfo(presentationData.theme, presentationData.strings.NotificationSettings_Stories_ShowImportantFooter))
-        }
-        
-        if notificationSettings.enabled || !notificationExceptions.isEmpty {
-            entries.append(.optionsHeader(presentationData.theme, presentationData.strings.Notifications_Options.uppercased()))
-            
-            entries.append(.previews(presentationData.theme, presentationData.strings.Notifications_Stories_DisplayName, notificationSettings.storySettings.hideSender != .hide))
-            entries.append(.sound(presentationData.theme, presentationData.strings.Notifications_MessageNotificationsSound, localizedPeerNotificationSoundString(strings: presentationData.strings, notificationSoundList: notificationSoundList, sound: filteredGlobalSound(notificationSettings.storySettings.sound)), filteredGlobalSound(notificationSettings.storySettings.sound)))
-        }
+        // Telegent: Stories feature has been removed
+        entries.append(.enableHeader("Stories has been removed in Telegent. It is recommended to turn off all options below."))
+        entries.append(.enable(presentationData.theme, presentationData.strings.Notifications_Stories_GlobalSetting, false))
     } else {
         entries.append(.enable(presentationData.theme, presentationData.strings.Notifications_MessageNotificationsAlert, notificationSettings.enabled))
         
