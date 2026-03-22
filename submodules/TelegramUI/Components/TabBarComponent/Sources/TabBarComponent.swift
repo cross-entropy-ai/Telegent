@@ -643,29 +643,13 @@ public final class TabBarComponent: Component {
                 unboundItemWidthSum += itemSize.width
             }
             
-            let itemWidths: [CGFloat]
-            let totalItemsWidth: CGFloat
+            // Telegent: use intrinsic icon widths with spacing, not fill-width
+            let itemSpacing: CGFloat = 16.0
+            let iconItemWidth: CGFloat = 64.0
+            let itemWidths: [CGFloat] = Array(repeating: iconItemWidth, count: component.items.count)
+            let totalItemsWidth: CGFloat = iconItemWidth * CGFloat(component.items.count) + itemSpacing * CGFloat(max(0, component.items.count - 1))
 
-            let equalWidth = floorToScreenPixels(availableItemsWidth / CGFloat(component.items.count))
-            if unboundItemWidths.allSatisfy({ $0 <= equalWidth }) {
-                // All items fit in equal width — use equal widths for optical alignment
-                itemWidths = Array(repeating: equalWidth, count: component.items.count)
-                totalItemsWidth = equalWidth * CGFloat(component.items.count)
-            } else {
-                // Some items need more space — use weighted fit
-                let itemWeightNorm: CGFloat = availableItemsWidth / unboundItemWidthSum
-                var widths: [CGFloat] = []
-                var total: CGFloat = 0.0
-                for index in 0 ..< component.items.count {
-                    let itemWidth = floorToScreenPixels(unboundItemWidths[index] * itemWeightNorm)
-                    widths.append(itemWidth)
-                    total += itemWidth
-                }
-                itemWidths = widths
-                totalItemsWidth = total
-            }
-
-            let itemHeight: CGFloat = 56.0
+            let itemHeight: CGFloat = 44.0
             let contentWidth: CGFloat = innerInset * 2.0 + totalItemsWidth
             let tabsSize = CGSize(width: min(availableSize.width, contentWidth), height: itemHeight + innerInset * 2.0)
 
@@ -728,7 +712,7 @@ public final class TabBarComponent: Component {
                 )
                 
                 var itemFrame = CGRect(origin: CGPoint(x: nextItemX, y: floor((tabsSize.height - itemSize.height) * 0.5)), size: itemSize)
-                nextItemX += itemSize.width
+                nextItemX += itemSize.width + itemSpacing
                 if isItemSelected {
                     selectionFrame = itemFrame
                 }
@@ -1090,21 +1074,9 @@ private final class ItemComponent: Component {
                 }
             }
             
-            let titleSize = self.title.update(
-                transition: .immediate,
-                component: AnyComponent(MultilineTextComponent(
-                    text: .plain(NSAttributedString(string: component.item.item.title ?? " ", font: Font.semibold(10.0), textColor: component.isSelected ? component.theme.rootController.tabBar.selectedTextColor : component.theme.rootController.tabBar.textColor))
-                )),
-                environment: {},
-                containerSize: CGSize(width: availableSize.width, height: 100.0)
-            )
-            let titleFrame = CGRect(origin: CGPoint(x: floor((availableSize.width - titleSize.width) * 0.5), y: availableSize.height - 8.0 - titleSize.height), size: titleSize)
+            // Telegent: hide tab bar titles
             if let titleView = self.title.view {
-                if titleView.superview == nil {
-                    self.contextContainerView.contentView.addSubview(titleView)
-                }
-                titleView.frame = titleFrame
-                alphaTransition.setAlpha(view: titleView, alpha: component.isCompact ? 0.0 : 1.0)
+                titleView.isHidden = true
             }
             
             if let badgeText = component.item.item.badgeValue, !badgeText.isEmpty {
@@ -1148,7 +1120,7 @@ private final class ItemComponent: Component {
             self.contextContainerView.contentRect = CGRect(origin: CGPoint(), size: availableSize)
             
             if component.isUnconstrained {
-                return CGSize(width: titleSize.width + 10.0 * 2.0, height: availableSize.height)
+                return CGSize(width: 64.0, height: availableSize.height)
             } else {
                 return availableSize
             }
