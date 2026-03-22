@@ -347,8 +347,7 @@ private func notificationsPeerCategoryEntries(category: NotificationsPeerCategor
     }
 
     if case .stories = category {
-        // Telegent: Stories feature has been removed
-        entries.append(.enableHeader("Stories has been removed in Telegent. It is recommended to turn off all options below."))
+        entries.append(.enableHeader(presentationData.strings.Notifications_Stories_SettingsHeader))
 
         var allEnabled = false
         var importantEnabled = false
@@ -369,6 +368,8 @@ private func notificationsPeerCategoryEntries(category: NotificationsPeerCategor
         if !allEnabled {
             entries.append(.enableImportant(presentationData.theme, presentationData.strings.Notifications_Stories_Important, importantEnabled))
         }
+        // Telegent: Stories removed notice
+        entries.append(.importantInfo(presentationData.theme, "Stories has been removed in Telegent. It is recommended to turn off all options on this page."))
     } else {
         entries.append(.enable(presentationData.theme, presentationData.strings.Notifications_MessageNotificationsAlert, notificationSettings.enabled))
         
