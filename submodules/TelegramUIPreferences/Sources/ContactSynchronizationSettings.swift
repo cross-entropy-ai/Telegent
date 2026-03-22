@@ -19,7 +19,7 @@ public struct ContactSynchronizationSettings: Equatable, Codable {
     public var sortOrder: ContactsSortOrder
     
     public static var defaultSettings: ContactSynchronizationSettings {
-        return ContactSynchronizationSettings(_legacySynchronizeDeviceContacts: true, nameDisplayOrder: .firstLast, sortOrder: .presence)
+        return ContactSynchronizationSettings(_legacySynchronizeDeviceContacts: false, nameDisplayOrder: .firstLast, sortOrder: .presence)
     }
     
     public init(_legacySynchronizeDeviceContacts: Bool, nameDisplayOrder: PresentationPersonNameOrder, sortOrder: ContactsSortOrder) {
