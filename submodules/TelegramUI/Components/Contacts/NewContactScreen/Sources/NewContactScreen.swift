@@ -96,7 +96,8 @@ final class NewContactScreenComponent: Component {
         
         private var updateFocusTag: Any?
         
-        private var syncContactToPhone = true
+        // Telegent: default off since system contacts permission is disabled
+        private var syncContactToPhone = false
         private var addToPrivacyExceptions = false
         
         private var cachedChevronImage: (UIImage, PresentationTheme)?
