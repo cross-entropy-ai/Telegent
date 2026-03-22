@@ -604,18 +604,10 @@ final class AuthorizedApplicationContext {
                         i += 1
                         continue
                     }
-                    var modal = false
                     switch subject {
-                        case .contacts:
-                            // Telegent: skip contacts permission request entirely
+                        case .contacts, .notifications:
+                            // Telegent: skip contacts and notifications permission prompts
                             break
-                        case .notifications:
-                            if case .modal = config.notifications {
-                                modal = true
-                            }
-                            if case .requestable = required.1.status, notificationsTimestamp != 0 {
-                                requestedPermissions.append((required.1, modal))
-                            }
                         case .cellularData:
                             if case .denied = required.2.status, cellularDataTimestamp != 0 {
                                 requestedPermissions.append((required.2, true))
