@@ -153,6 +153,8 @@ final class AuthorizedApplicationContext {
     
     private var showCallsTab: Bool
     private var showCallsTabDisposable: Disposable?
+    private var showContactsTab: Bool = true
+    private var showContactsTabDisposable: Disposable?
     private var enablePostboxTransactionsDiposable: Disposable?
     
     init(sharedApplicationContext: SharedApplicationContext, mainWindow: Window1, context: AccountContextImpl, accountManager: AccountManager<TelegramAccountManagerTypes>, showCallsTab: Bool, reinitializedNotificationSettings: @escaping () -> Void) {
@@ -249,7 +251,7 @@ final class AuthorizedApplicationContext {
         }
         
         if self.rootController.rootTabController == nil {
-            self.rootController.addRootControllers(showCallsTab: self.showCallsTab)
+            self.rootController.addRootControllers(showCallsTab: self.showCallsTab, showContactsTab: self.showContactsTab)
         }
         if let tabsController = self.rootController.viewControllers.first as? TabBarController, !tabsController.controllers.isEmpty, tabsController.selectedIndex >= 0 {
             let controller = tabsController.controllers[tabsController.selectedIndex]
@@ -781,7 +783,30 @@ final class AuthorizedApplicationContext {
             if let strongSelf = self {
                 if strongSelf.showCallsTab != value {
                     strongSelf.showCallsTab = value
-                    strongSelf.rootController.updateRootControllers(showCallsTab: value)
+                    strongSelf.rootController.updateRootControllers(showCallsTab: value, showContactsTab: strongSelf.showContactsTab)
+                }
+            }
+        })
+
+        let telegentSettingsSignal = context.sharedContext.accountManager.sharedData(keys: [ApplicationSpecificSharedDataKeys.telegentSettings])
+        |> map { sharedData -> TelegentSettings in
+            return sharedData.entries[ApplicationSpecificSharedDataKeys.telegentSettings]?.get(TelegentSettings.self) ?? .defaultSettings
+        }
+        self.showContactsTabDisposable = (telegentSettingsSignal |> deliverOnMainQueue).start(next: { [weak self] settings in
+            if let strongSelf = self {
+                let showContacts = settings.showContactsTab
+                let showCalls = settings.showCallsTab
+                var changed = false
+                if strongSelf.showContactsTab != showContacts {
+                    strongSelf.showContactsTab = showContacts
+                    changed = true
+                }
+                if strongSelf.showCallsTab != showCalls {
+                    strongSelf.showCallsTab = showCalls
+                    changed = true
+                }
+                if changed {
+                    strongSelf.rootController.updateRootControllers(showCallsTab: strongSelf.showCallsTab, showContactsTab: strongSelf.showContactsTab)
                 }
             }
         })

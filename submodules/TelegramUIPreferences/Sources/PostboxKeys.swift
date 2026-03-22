@@ -44,6 +44,7 @@ private enum ApplicationSpecificSharedDataKeyValues: Int32 {
     case mediaDisplaySettings = 20
     case updateSettings = 21
     case chatSettings = 22
+    case telegentSettings = 23
 }
 
 public struct ApplicationSpecificSharedDataKeys {
@@ -70,6 +71,7 @@ public struct ApplicationSpecificSharedDataKeys {
     public static let mediaDisplaySettings = applicationSpecificPreferencesKey(ApplicationSpecificSharedDataKeyValues.mediaDisplaySettings.rawValue)
     public static let updateSettings = applicationSpecificPreferencesKey(ApplicationSpecificSharedDataKeyValues.updateSettings.rawValue)
     public static let chatSettings = applicationSpecificPreferencesKey(ApplicationSpecificSharedDataKeyValues.chatSettings.rawValue)
+    public static let telegentSettings = applicationSpecificSharedDataKey(ApplicationSpecificSharedDataKeyValues.telegentSettings.rawValue)
 }
 
 private enum ApplicationSpecificItemCacheCollectionIdValues: Int8 {

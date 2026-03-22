@@ -195,7 +195,7 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         super.containerLayoutUpdated(layout, transition: transition)
     }
     
-    public func addRootControllers(showCallsTab: Bool) {
+    public func addRootControllers(showCallsTab: Bool, showContactsTab: Bool = true) {
         let tabBarController = TabBarControllerImpl(theme: self.presentationData.theme, strings: self.presentationData.strings)
         tabBarController.navigationPresentation = .master
         let chatListController = self.context.sharedContext.makeChatListController(context: self.context, location: .chatList(groupId: .root), controlsHistoryPreload: true, hideNetworkActivityStatus: false, previewing: false, enableDebugActions: !GlobalExperimentalSettings.isAppStoreBuild)
@@ -210,8 +210,10 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         contactsController.switchToChatsController = {  [weak self] in
             self?.openChatsController(activateSearch: false)
         }
-        controllers.append(contactsController)
-        
+        if showContactsTab {
+            controllers.append(contactsController)
+        }
+
         if showCallsTab {
             controllers.append(callListController)
         }
@@ -246,12 +248,14 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         self.pushViewController(tabBarController, animated: false)
     }
         
-    public func updateRootControllers(showCallsTab: Bool) {
+    public func updateRootControllers(showCallsTab: Bool, showContactsTab: Bool = true) {
         guard let rootTabController = self.rootTabController as? TabBarControllerImpl else {
             return
         }
         var controllers: [ViewController] = []
-        controllers.append(self.contactsController!)
+        if showContactsTab {
+            controllers.append(self.contactsController!)
+        }
         if showCallsTab {
             controllers.append(self.callListController!)
         }
